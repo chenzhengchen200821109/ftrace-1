@@ -1,0 +1,62 @@
+.TH FTRACE 1 "14 Jan 2010"
+.\" This is a comment. Process this file with groff -man -Tascii ftrace.1
+.SH NAME
+ftrace \- a local function tracer
+.SH SYNOPSIS
+.B ftrace
+.I "[options] program"
+.br
+.SH "AUTHOR"
+This program and manual page was written by Ryan O'Neill.
+.SH "DESRIPTION"
+.B ftrace
+is a reverse engineering tool designed to help map out the execution flow
+of ELF executables (32bit and 64bit). Instead of printing system calls or library
+function calls, it prints out the local function calls as they are happening,
+and attempts to retrieve the function arguments and determine whether they are
+immediate or pointer type. As of version 0.2, function arguments are only shown
+for 64bit executables. This program is useful when wanting to see the function
+flow of a given executable during runtime without having to set incremental breakpoints and backtraces in a debugger like gdb. Ftrace relies on symbols for seeing a functions actual name, but the -S option will show function calls for functions without symbols as well, displaying them as sub_<addr>. As of v0.2, complete control flow \-C feature was added which gives control flow information beyond just call instructions, moving into other branch instructions. Only branch <imm> instructions are currently supported, but will be adding disassembly of branch *<reg> soon.
+.SH OPTIONS
+A summary of options are included below.
+.TP
+.B \-v
+Verbose output, print symbol table info etc.
+.TP
+.B \-p 
+This option is used to attach to an existing process ID.
+.TP
+.B \-s 
+This option will show strings as they are passed through functions (As best it knows how)
+.TP
+.B \-e 
+This will show certain ELF info such as symbols, and lists the shared library deps.
+.TP
+.B \-t 
+Type detection will guess what pointer type a function argument is, if it is a pointer.It will detect pointers that are within the range of the text segment, data segment, heap and the stack.
+.TP
+.B \-S
+Show function calls that don't have a matching symbol (For stripped binaries)
+.TP
+.B \-C 
+Complete control flow analysis (branch instructions other than call)
+.SH "BUGS"
+.PP
+* Semi Rare EIO ptrace error (In progress to fix)
+.PP
+* Memory leak with -s (In progress to fix)
+.SH "FUTURE"
+.PP
+* Add support for function arguments on 32bit
+.PP
+* Add support for following fork'd children of target process
+.PP
+* Extend heuristics of 64bit procedure prologue calling convention for function args.
+.PP
+* Add dwarf2 support for .debug section to get function prototype info
+.PP
+* Port to FreeBSD
+.PP
+* Add support for indirect calls, jmps.
+
+
